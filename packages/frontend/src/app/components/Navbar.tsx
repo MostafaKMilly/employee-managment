@@ -3,9 +3,6 @@ export default function Navbar() {
     <nav className="bg-blue-500 p-4 text-white">
       <ul className="flex space-x-4">
         <li>
-          <a href="/">Home</a>
-        </li>
-        <li>
           <a href="/departments">Departments</a>
         </li>
         <li>

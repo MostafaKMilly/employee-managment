@@ -1,3 +1,4 @@
+import { revalidateTag } from "next/cache";
 import { addEmployee, loadDepartments, loadEmployees } from "../api";
 import EmployeeDialog from "./components/EmployeeDialog";
 
@@ -12,13 +13,14 @@ export default async function Employees() {
   }) => {
     "use server";
     const { departmentId, employeeName, employeeSurname } = data;
+    console.log(departmentId, employeeName, employeeSurname);
     if (departmentId && employeeName && employeeSurname) {
       await addEmployee({
         department: departmentId,
         name: employeeName,
         surname: employeeSurname,
       });
-      loadEmployees();
+      revalidateTag("employees");
     }
   };
 
@@ -29,9 +31,9 @@ export default async function Employees() {
         <EmployeeDialog onSave={createEmployee} departments={departments} />
         <ul>
           {employees?.map((e) => (
-            <li key={e.id}>
-              {e.name} {e.surname} - Department:{" "}
-              {departments.find((d) => d.id === e.department)?.name}
+            <li key={e._id}>
+              {e.name} {e.surname} - Department:
+              {e.department?.name}
             </li>
           ))}
         </ul>

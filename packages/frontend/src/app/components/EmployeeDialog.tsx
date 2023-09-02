@@ -1,5 +1,7 @@
 "use client";
 import React, { useState, FC } from "react";
+import { Department } from "@/types/department.types";
+import Dialog from "./Dialog";
 
 interface Props {
   onSave: (data: {
@@ -7,26 +9,31 @@ interface Props {
     employeeSurname: string;
     departmentId: string;
   }) => void;
-  departments: { name: string; id: string }[];
+  departments: Department[];
 }
 
 const EmployeeDialog: FC<Props> = ({ onSave, departments }) => {
-  const [employeeName, setEmployeeName] = useState<string>("");
-  const [employeeSurname, setEmployeeSurname] = useState<string>("");
-  const [departmentId, setDepartmentId] = useState<string>("");
-  const [isOpen, setIsOpne] = useState(false);
+  const [employeeName, setEmployeeName] = useState("");
+  const [employeeSurname, setEmployeeSurname] = useState("");
+  const [departmentId, setDepartmentId] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
-  const onClose = () => setIsOpne(false);
+  const handleClose = () => {
+    setIsOpen(false);
+    setEmployeeName("");
+    setEmployeeSurname("");
+    setDepartmentId("");
+  };
 
   return (
     <>
       <button
-        onClick={() => setIsOpne(false)}
+        onClick={() => setIsOpen(true)}
         className="bg-blue-500 text-white px-4 py-2 rounded"
       >
         Add Employee
       </button>
-      {isOpen && (
+      <Dialog title="Add Employee" isOpen={isOpen} onClose={handleClose}>
         <div className="fixed top-0 left-0 w-full h-full bg-opacity-50 bg-black flex justify-center items-center">
           <div className="bg-white p-4 rounded">
             <h1 className="text-xl">Add Employee</h1>
@@ -49,13 +56,13 @@ const EmployeeDialog: FC<Props> = ({ onSave, departments }) => {
               <div className="mb-4">
                 <label
                   className="block text-gray-700 text-sm font-bold mb-2"
-                  htmlFor="employeePosition"
+                  htmlFor="employeeSurname"
                 >
-                  Position
+                  Surname
                 </label>
                 <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="employeePosition"
+                  id="employeeSurname"
                   type="text"
                   value={employeeSurname}
                   onChange={(e) => setEmployeeSurname(e.target.value)}
@@ -77,25 +84,33 @@ const EmployeeDialog: FC<Props> = ({ onSave, departments }) => {
                     Select Department
                   </option>
                   {departments.map((dept) => (
-                    <option key={dept.id} value={dept.id}>
+                    <option key={dept._id} value={dept._id}>
                       {dept.name}
                     </option>
                   ))}
                 </select>
               </div>
             </form>
-            <button onClick={onClose}>Close</button>
-            <button
-              onClick={() => {
-                onSave({ employeeName, employeeSurname, departmentId });
-                onClose();
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
-              Save
-            </button>
+              <button onClick={handleClose}>Close</button>
+              <button
+                onClick={() => {
+                  onSave({ employeeName, employeeSurname, departmentId });
+                  handleClose();
+                }}
+              >
+                Save
+              </button>
+            </div>
           </div>
         </div>
-      )}
+      </Dialog>
     </>
   );
 };

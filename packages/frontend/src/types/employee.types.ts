@@ -1,8 +1,11 @@
 export interface Employee {
-  id: string;
+  _id: string;
   name: string;
   surname: string;
-  department: string;
+  department: {
+    _id: string;
+    name: string;
+  };
 }
 
 export interface AddEmployeeRequest {
